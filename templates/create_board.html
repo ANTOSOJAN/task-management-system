@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Create Task Board</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="/static/styles.css">  
+</head>
+<body>
+    <h2>Create a New Task Board</h2>    
+    <form method="post" action="/create-board">
+        <input type="text" name="title" placeholder="Board Title" required><br>
+        <input type="text" name="description" placeholder="Board Description (Optional)"><br>
+        <button type="submit">Create Board</button>
+    </form>
+    <a href="/">← Back to Home</a>
+    {% if request.query_params.get('error') == 'creation_failed' %}
+        <div class="error">Failed to create board. Please try again.</div>
+    {% endif %}
+</body>
+</html>

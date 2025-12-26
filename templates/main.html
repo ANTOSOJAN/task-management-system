@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Task Board App</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script type="module" src="/static/firebase-login.js"></script>
+    <link rel="stylesheet" href="static/styles.css">
+</head>
+<body>
+    <!-- Authentication -->
+    <div id="login-box" class="{% if user_token %}hidden{% else %}visible{% endif %}">
+        <input type="email" id="email" placeholder="Email">
+        <input type="password" id="password" placeholder="Password">
+        <button id="login">Login</button>
+        <button id="sign-up">Sign Up</button>
+        <div id="warning-message" style="color: red; margin-top: 10px; display: none;">Fields cannot be empty!</div>
+    </div>
+
+    <button id="sign-out" class="{% if user_token %}visible{% else %}hidden{% endif %}">Sign Out</button>
+    <p>Welcome, {% if user_token %}{{ user_token.get("email", "User") }}{% else %}User{% endif %}!</p>
+
+    {% if user_token %}
+        <!-- Your Boards Section -->
+        <div id="boards-section">
+            <h2>Your Task Boards</h2>
+            <div style="margin-bottom: 20px;">
+                <a href="/create-board-form">
+                    <button class="create-board-button">Create New Board</button>
+                </a>
+            </div>
+
+            <div id="boards-list">
+                {% if boards|length == 0 %}
+                    <p>No boards available. Create a new one!</p>
+                {% else %}
+                    {% for board in boards %}
+                        <div class="board-card">
+                            <a href="/board/{{ board.id }}">
+                                <h3>{{ board.title }}</h3>
+                            </a>
+                            <p class="task-creator">Created by: {{ board.creator_email }}</p>
+                            {% if board.is_creator %}
+                                <span class="creator-badge"> You are the creator</span>
+                            {% endif %}
+                            <p>{{ board.description or "No description" }}</p>
+                        </div>
+                    {% endfor %}
+                {% endif %}
+            </div>
+        </div>
+
+        <!-- Shared Boards Section -->
+        <div id="shared-boards-section">
+            <h2>Shared Task Boards</h2>
+            <div id="shared-boards-list">
+                {% if shared_boards|length == 0 %}
+                    <p>No shared boards available.</p>
+                {% else %}
+                    {% for board in shared_boards %}
+                        <div class="board-card">
+                            <a href="/board/{{ board.id }}">
+                                <h3>{{ board.title }}</h3>
+                            </a>
+                            <p class="task-creator">Created by: {{ board.creator_email }}</p>
+                            {% if board.is_creator %}
+                                <span class="creator-badge"> You are the creator</span>
+                            {% endif %}
+                            <p>{{ board.description or "No description" }}</p>
+                        </div>
+                    {% endfor %}
+                {% endif %}
+            </div>
+        </div>
+    {% endif %}
+</body>
+</html>
